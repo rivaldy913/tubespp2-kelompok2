@@ -6,10 +6,11 @@ import model.User;
 import mapper.UserMapper;
 import model.MyBatisUtil;
 import org.apache.ibatis.session.SqlSession;
+import view.LoginView;
 
 public class KurirController {
 
-    //register
+    // register
     public boolean registerKurir(String nama, String email, String password, String kk, String ktp) {
 
         try (SqlSession session = MyBatisUtil.getSqlSessionFactory().openSession()) {
@@ -42,5 +43,9 @@ public class KurirController {
             return false;
         }
     }
-
+    // Entry point to start the application
+    public static void main(String[] args) {
+        // Launch the login page
+        javax.swing.SwingUtilities.invokeLater(() -> new LoginView().setVisible(true));
+    }
 }
