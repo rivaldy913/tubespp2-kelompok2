@@ -43,7 +43,6 @@ public class KurirController {
             return false;
         }
     }
-
     // Entry point to start the application
     public static void main(String[] args) {
         // Launch the login page
