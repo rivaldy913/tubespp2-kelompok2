@@ -58,4 +58,34 @@ public class KurirController {
         }
         return null;
     }
+
+    // Periksa apakah NIK KTP ada di database
+    public boolean checkKTPExists(String ktp) {
+        try (SqlSession session = MyBatisUtil.getSqlSessionFactory().openSession()) {
+            UserMapper userMapper = session.getMapper(UserMapper.class);
+            return userMapper.checkKTPExists(ktp) > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // Reset password pengguna
+    public boolean resetPassword(String ktp, String password) {
+        try (SqlSession session = MyBatisUtil.getSqlSessionFactory().openSession()) {
+            UserMapper userMapper = session.getMapper(UserMapper.class);
+
+            // Hash password baru
+            String hashedPassword = PasswordHasher.hashPassword(password);
+
+            // Update password di database
+            userMapper.updatePasswordByKTP(ktp, hashedPassword);
+            session.commit();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 }

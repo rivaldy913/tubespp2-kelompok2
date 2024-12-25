@@ -120,9 +120,12 @@ public class LoginView extends JFrame {
             this.dispose();
         });
 
+        // Tambahkan dalam konstruktor LoginView
         btnForgotPassword.addActionListener(e -> {
-            JOptionPane.showMessageDialog(this, "Fungsi reset password belum tersedia.");
+            new ForgotPasswordView().setVisible(true);
+            this.dispose();
         });
+
 
         // Menambahkan mainPanel ke Frame
         add(mainPanel);
