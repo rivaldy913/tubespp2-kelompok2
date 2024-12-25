@@ -1,7 +1,9 @@
 package view;
 
+import controller.KurirController;
 import java.awt.*;
 import javax.swing.*;
+import model.User;
 
 public class LoginView extends JFrame {
 
@@ -41,10 +43,12 @@ public class LoginView extends JFrame {
         fieldEmail.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 
         gbc.gridwidth = 1;
-        gbc.gridx = 0; gbc.gridy = 1;
+        gbc.gridx = 0;
+        gbc.gridy = 1;
         mainPanel.add(labelEmail, gbc);
 
-        gbc.gridx = 1; gbc.gridy = 1;
+        gbc.gridx = 1;
+        gbc.gridy = 1;
         mainPanel.add(fieldEmail, gbc);
 
         // Label dan Field Password
@@ -53,10 +57,12 @@ public class LoginView extends JFrame {
         JPasswordField fieldPassword = new JPasswordField(15);
         fieldPassword.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 
-        gbc.gridx = 0; gbc.gridy = 2;
+        gbc.gridx = 0;
+        gbc.gridy = 2;
         mainPanel.add(labelPassword, gbc);
 
-        gbc.gridx = 1; gbc.gridy = 2;
+        gbc.gridx = 1;
+        gbc.gridy = 2;
         mainPanel.add(fieldPassword, gbc);
 
         // Panel Tombol
@@ -70,7 +76,9 @@ public class LoginView extends JFrame {
         buttonPanel.add(btnLogin);
         buttonPanel.add(btnRegister);
 
-        gbc.gridx = 0; gbc.gridy = 3; gbc.gridwidth = 2;
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.gridwidth = 2;
         mainPanel.add(buttonPanel, gbc);
 
         gbc.gridy = 4; // Posisi tombol Lupa Password di bawah buttonPanel
@@ -83,9 +91,28 @@ public class LoginView extends JFrame {
 
         // Aksi Tombol
         btnLogin.addActionListener(e -> {
-            String email = fieldEmail.getText();
-            String password = new String(fieldPassword.getPassword());
-            JOptionPane.showMessageDialog(this, "Login belum diimplementasikan.");
+            String email = fieldEmail.getText().trim();
+            String password = new String(fieldPassword.getPassword()).trim();
+
+            // Debugging tampil email dan password
+            // System.out.println("Email Input: " + email);
+            // System.out.println("Password Input: " + password);
+            if (email.isEmpty() || password.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Email dan password harus diisi!", "Peringatan", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            // Proses login
+            KurirController controller = new KurirController();
+            User user = controller.loginKurir(email, password);
+
+            if (user != null) {
+                JOptionPane.showMessageDialog(this, "Login berhasil!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
+                new DashboardView(user).setVisible(true);
+                this.dispose();
+            } else {
+                JOptionPane.showMessageDialog(this, "Login gagal! Email atau password salah.", "Kesalahan", JOptionPane.ERROR_MESSAGE);
+            }
         });
 
         btnRegister.addActionListener(e -> {

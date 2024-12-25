@@ -5,17 +5,23 @@ public class Profile {
     private int id;
     private int userId;
     private String foto;
+    private String nama;
     private String alamat;
     private String tanggalLahir;
     private String noRekening;
+    private String fotokk;
+    private String fotoktp;
 
-    public Profile(int id, int userId, String foto, String alamat, String tanggalLahir, String noRekening) {
+    public Profile(int id, int userId, String nama, String foto, String alamat, String tanggalLahir, String noRekening, String fotokk, String fotoktp) {
         this.id = id;
         this.userId = userId;
+        this.nama = nama;
         this.foto = foto;
         this.alamat = alamat;
         this.tanggalLahir = tanggalLahir;
         this.noRekening = noRekening;
+        this.fotokk = fotokk;
+        this.fotoktp = fotoktp;
     }
 
     // Getter dan Setter
@@ -33,6 +39,14 @@ public class Profile {
 
     public void setUserId(int userId) {
         this.userId = userId;
+    }
+
+    public String getNama() {
+        return nama;
+    }
+
+    public void setNama(String nama) {
+        this.nama = nama;
     }
 
     public String getFoto() {
@@ -65,5 +79,21 @@ public class Profile {
 
     public void setNoRekening(String noRekening) {
         this.noRekening = noRekening;
+    }
+
+    public String getFotoKK() {
+        return fotokk;
+    }
+
+    public void setFotoKK(String fotokk) {
+        this.fotokk = fotokk;
+    }
+
+    public String getFotoKTP() {
+        return fotoktp;
+    }
+
+    public void setFotoKTP(String fotoktp) {
+        this.fotoktp = fotoktp;
     }
 }
