@@ -3,10 +3,13 @@ package view;
 import java.awt.*;
 import javax.swing.*;
 import model.User;
+import org.apache.ibatis.session.SqlSessionFactory;
 
 public class OrderView extends JFrame {
+    private final SqlSessionFactory sqlSessionFactory;
 
-    public OrderView(User user) {
+    public OrderView(User user, SqlSessionFactory sqlSessionFactory) {  // Tambah parameter SqlSessionFactory
+        this.sqlSessionFactory = sqlSessionFactory;  // Simpan SqlSessionFactory
         setTitle("Halaman Order");
         setSize(600, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -31,7 +34,7 @@ public class OrderView extends JFrame {
         btnBack.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         btnBack.addActionListener(e -> {
-            new DashboardView(user).setVisible(true);
+            new DashboardView(user, sqlSessionFactory).setVisible(true);  // Tambah SqlSessionFactory
             this.dispose();
         });
 

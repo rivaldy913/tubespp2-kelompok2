@@ -4,6 +4,7 @@ import mapper.UserMapper;
 import model.MyBatisUtil;
 import model.User;
 import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
 import util.PasswordHasher;
 
 public class KurirController {
@@ -86,6 +87,9 @@ public class KurirController {
             e.printStackTrace();
             return false;
         }
+    }
+    public SqlSessionFactory getSqlSessionFactory() {
+        return MyBatisUtil.getSqlSessionFactory();  // Pastikan ini sesuai dengan cara Anda mendapatkan SqlSessionFactory
     }
 
 }
