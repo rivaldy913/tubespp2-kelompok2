@@ -94,9 +94,6 @@ public class LoginView extends JFrame {
             String email = fieldEmail.getText().trim();
             String password = new String(fieldPassword.getPassword()).trim();
 
-            // Debugging tampil email dan password
-            // System.out.println("Email Input: " + email);
-            // System.out.println("Password Input: " + password);
             if (email.isEmpty() || password.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Email dan password harus diisi!", "Peringatan", JOptionPane.WARNING_MESSAGE);
                 return;
@@ -108,7 +105,7 @@ public class LoginView extends JFrame {
 
             if (user != null) {
                 JOptionPane.showMessageDialog(this, "Login berhasil!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
-                new DashboardView(user).setVisible(true);
+                new DashboardView(user, controller.getSqlSessionFactory()).setVisible(true);  // Tambahkan SqlSessionFactory
                 this.dispose();
             } else {
                 JOptionPane.showMessageDialog(this, "Login gagal! Email atau password salah.", "Kesalahan", JOptionPane.ERROR_MESSAGE);
