@@ -23,6 +23,11 @@ public interface UserMapper {
     @Update("UPDATE users SET password = #{password} WHERE ktp = #{ktp}")
     void updatePasswordByKTP(@Param("ktp") String ktp, @Param("password") String password);
 
+    @Update("UPDATE users SET password = #{password} WHERE email = #{email}")
+    void updatePasswordByEmail(@Param("email") String email, @Param("password") String password);
+
+
+
 
 }
 

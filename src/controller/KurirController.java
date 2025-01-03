@@ -6,8 +6,55 @@ import model.User;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import util.PasswordHasher;
+import util.EmailUtil;
+import java.util.Random;
 
 public class KurirController {
+
+        private static final int OTP_LENGTH = 6;
+
+    public boolean resetPasswordByEmail(String email, String password) {
+        try (SqlSession session = MyBatisUtil.getSqlSessionFactory().openSession()) {
+            UserMapper userMapper = session.getMapper(UserMapper.class);
+
+            // Hash password baru
+            String hashedPassword = PasswordHasher.hashPassword(password);
+
+            // Update password di database berdasarkan email
+            userMapper.updatePasswordByEmail(email, hashedPassword);
+            session.commit();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
+
+
+    // Metode untuk menghasilkan OTP
+        public String generateOTP() {
+            Random random = new Random();
+            StringBuilder otp = new StringBuilder();
+            for (int i = 0; i < OTP_LENGTH; i++) {
+                otp.append(random.nextInt(10));
+            }
+            return otp.toString();
+        }
+
+        // Metode untuk mengirim OTP ke email
+        public boolean sendOtpToEmail(String email, String otp) {
+            String subject = "OTP Reset Password";
+            String body = "Your OTP for resetting your password is: " + otp;
+            try {
+                EmailUtil.sendEmail(email, subject, body);
+                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
 
     // Register Kurir
     public boolean registerKurir(String nama, String email, String password, String kk, String ktp) {
