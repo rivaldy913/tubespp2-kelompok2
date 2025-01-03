@@ -7,10 +7,10 @@ import javax.swing.*;
 public class ResetPasswordView extends JFrame {
 
     private KurirController controller;
-    private static String ktp;
+    private String email;
 
-    public ResetPasswordView(String ktp) {
-        this.ktp = ktp;
+    public ResetPasswordView(String email) {
+        this.email = email;
         controller = new KurirController();
         setTitle("Reset Password");
         setSize(400, 300);
@@ -41,7 +41,7 @@ public class ResetPasswordView extends JFrame {
             }
 
             try {
-                boolean success = controller.resetPassword(ktp, password);
+                boolean success = controller.resetPasswordByEmail(email, password);
                 if (success) {
                     JOptionPane.showMessageDialog(this, "Password berhasil direset!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
                     new LoginView().setVisible(true);
@@ -73,7 +73,7 @@ public class ResetPasswordView extends JFrame {
         add(mainPanel);
     }
 
-    public void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new ResetPasswordView(ktp).setVisible(true));
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new ResetPasswordView("example@example.com").setVisible(true));
     }
 }
