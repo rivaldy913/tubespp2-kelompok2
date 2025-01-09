@@ -7,6 +7,7 @@ import javax.swing.*;
 public class RegisterView extends JFrame {
 
     private KurirController controller;
+    private String otp;
 
     public RegisterView() {
         controller = new KurirController();
@@ -26,14 +27,11 @@ public class RegisterView extends JFrame {
         headerLabel.setForeground(Color.WHITE);
         headerPanel.add(headerLabel);
 
-        // Input data
+        // input data
         JPanel formPanel = new JPanel(new GridBagLayout());
         formPanel.setBackground(new Color(240, 248, 255));
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
-
-        JLabel labelNama = new JLabel("Nama:");
-        JTextField fieldNama = new JTextField(20);
 
         JLabel labelEmail = new JLabel("Email:");
         JTextField fieldEmail = new JTextField(20);
@@ -52,40 +50,29 @@ public class RegisterView extends JFrame {
         btnRegister.setForeground(Color.WHITE);
         btnRegister.setFont(new Font("Arial", Font.BOLD, 14));
 
-        // Action listener untuk tombol registrasi
+        // action listener untuk tombol registrasi
         btnRegister.addActionListener(e -> {
-            String nama = fieldNama.getText().trim();
             String email = fieldEmail.getText().trim();
             String password = new String(fieldPassword.getPassword()).trim();
             String ktp = fieldKTP.getText().trim();
             String kk = fieldKK.getText().trim();
 
-            if (nama.isEmpty() || email.isEmpty() || password.isEmpty() || ktp.isEmpty() || kk.isEmpty()) {
+            if (email.isEmpty() || password.isEmpty() || ktp.isEmpty() || kk.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Semua field harus diisi!", "Peringatan", JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
             try {
-                boolean success = controller.registerKurir(nama, email, password, kk, ktp);
-                if (success) {
-                    JOptionPane.showMessageDialog(this, "Registrasi Berhasil!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
-                    new LoginView().setVisible(true);
-                    this.dispose();
-                } else {
-                    JOptionPane.showMessageDialog(this, "Registrasi Gagal", "Kesalahan", JOptionPane.ERROR_MESSAGE);
-                }
+                otp = controller.generateOTP();
+                controller.sendOtpForRegistration(email, otp);
+
+                new ROtpVerificationView(email, password, kk, ktp, otp).setVisible(true);
+                this.dispose();
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, "Terjadi kesalahan saat proses registrasi: " + ex.getMessage(), "Kesalahan", JOptionPane.ERROR_MESSAGE);
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Gagal mengirim OTP", "Kesalahan", JOptionPane.ERROR_MESSAGE);
             }
         });
-
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.anchor = GridBagConstraints.WEST;
-        formPanel.add(labelNama, gbc);
-
-        gbc.gridx = 1;
-        formPanel.add(fieldNama, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 1;
@@ -115,10 +102,9 @@ public class RegisterView extends JFrame {
         gbc.gridx = 1;
         formPanel.add(fieldKK, gbc);
 
-        gbc.gridx = 1;
+        gbc.gridx = 0;
         gbc.gridy = 5;
         gbc.gridwidth = 2;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
         formPanel.add(btnRegister, gbc);
 
         mainPanel.add(headerPanel, BorderLayout.NORTH);
