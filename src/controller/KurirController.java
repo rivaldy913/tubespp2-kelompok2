@@ -11,7 +11,7 @@ import java.util.Random;
 
 public class KurirController {
 
-        private static final int OTP_LENGTH = 6;
+    private static final int OTP_LENGTH = 6;
 
     public boolean resetPasswordByEmail(String email, String password) {
         try (SqlSession session = MyBatisUtil.getSqlSessionFactory().openSession()) {
@@ -30,47 +30,56 @@ public class KurirController {
         }
     }
 
-
-
-
     // Metode untuk menghasilkan OTP
-        public String generateOTP() {
-            Random random = new Random();
-            StringBuilder otp = new StringBuilder();
-            for (int i = 0; i < OTP_LENGTH; i++) {
-                otp.append(random.nextInt(10));
-            }
-            return otp.toString();
+    public String generateOTP() {
+        Random random = new Random();
+        StringBuilder otp = new StringBuilder();
+        for (int i = 0; i < OTP_LENGTH; i++) {
+            otp.append(random.nextInt(10));
         }
+        return otp.toString();
+    }
 
-        // Metode untuk mengirim OTP ke email
-        public boolean sendOtpToEmail(String email, String otp) {
-            String subject = "OTP Reset Password";
-            String body = "Your OTP for resetting your password is: " + otp;
-            try {
-                EmailUtil.sendEmail(email, subject, body);
-                return true;
-            } catch (Exception e) {
-                e.printStackTrace();
-                return false;
-            }
+    // Metode untuk mengirim OTP ke email untuk reset password
+    public boolean sendOtpToEmail(String email, String otp) {
+        String subject = "OTP Reset Password";
+        String body = "Your OTP for resetting your password is: " + otp;
+        try {
+            EmailUtil.sendEmail(email, subject, body);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
+    }
 
-    // Register Kurir
-    public boolean registerKurir(String nama, String email, String password, String kk, String ktp) {
+    // Metode untuk mengirim OTP ke email untuk registrasi Kurir
+    public boolean sendOtpForRegistration(String email, String otp) {
+        String subject = "OTP Registration";
+        String body = "Your OTP for registration is: " + otp;
+        try {
+            EmailUtil.sendEmail(email, subject, body);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // Register Kurir dengan OTP
+    public boolean registerKurir(String email, String password, String kk, String ktp, String otp) {
         try (SqlSession session = MyBatisUtil.getSqlSessionFactory().openSession()) {
             UserMapper userMapper = session.getMapper(UserMapper.class);
 
-            // Hash password sebelum ke database
             String hashedPassword = PasswordHasher.hashPassword(password);
-            // System.out.println("Register - Hashed Password: " + hashedPassword); // Debug
 
             User user = new User(0, email, hashedPassword, kk, ktp);
 
-            // Insert user ke database
             userMapper.insertUser(user);
             session.commit();
-            return true;
+
+            boolean emailSent = sendOtpForRegistration(email, otp);
+            return emailSent;
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -89,9 +98,6 @@ public class KurirController {
                 // Hash password yang dimasukkan
                 String hashedPassword = PasswordHasher.hashPassword(password);
 
-                // // Debug
-                // System.out.println("Login - Input Hashed Password: " + hashedPassword);
-                // System.out.println("Login - Stored Hashed Password: " + user.getPassword());
                 // Perbandingan password hash
                 if (hashedPassword.equals(user.getPassword())) {
                     return user;
@@ -135,8 +141,32 @@ public class KurirController {
             return false;
         }
     }
+
     public SqlSessionFactory getSqlSessionFactory() {
         return MyBatisUtil.getSqlSessionFactory();  // Pastikan ini sesuai dengan cara Anda mendapatkan SqlSessionFactory
+    }
+
+    // Metode untuk menghapus akun berdasarkan email
+    public boolean deleteAccount(String email) {
+        try (SqlSession session = MyBatisUtil.getSqlSessionFactory().openSession()) {
+            UserMapper userMapper = session.getMapper(UserMapper.class);
+
+            // Periksa apakah pengguna ada sebelum menghapus
+            User user = userMapper.findByEmail(email);
+            if (user == null) {
+                System.out.println("Akun tidak ditemukan untuk email: " + email);
+                return false;
+            }
+
+            // Hapus akun
+            userMapper.deleteAccount(email);
+            session.commit();
+            System.out.println("Akun berhasil dihapus untuk email: " + email);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
 }
