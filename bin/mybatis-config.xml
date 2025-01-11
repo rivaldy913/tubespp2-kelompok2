@@ -17,6 +17,6 @@
     </environments>
     <mappers>
         <mapper class="mapper.UserMapper"/>
-        <mapper class="mapper.ProfileMapper"/>
+        <mapper resource="model/UserDocumentMapper.xml"/>
     </mappers>
 </configuration>
